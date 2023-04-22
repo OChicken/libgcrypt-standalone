@@ -188,6 +188,7 @@ check_hmac_multi (void)
     }
 }
 
+/* https://github.com/Jin-Yang/examples/blob/master/cipher/libgcrypt/hmac.c */
 static void
 examples_JinYang(void)
 {
