@@ -93,6 +93,8 @@ check_hmac (void)
     fprintf (stderr, "checking FIPS-198a, A.1\n");
   for (i=0; i < 64; i++)
     key[i] = i;
+  /* 000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f
+   * 202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f */
   check_one_mac (GCRY_MD_SHA1, key, 64, "Sample #1", 9,
                  "\x4f\x4c\xa3\xd5\xd6\x8b\xa7\xcc\x0a\x12"
                  "\x08\xc9\xc6\x1e\x9c\x5d\xa0\x40\x3c\x0a");
@@ -101,6 +103,7 @@ check_hmac (void)
     fprintf (stderr, "checking FIPS-198a, A.2\n");
   for (i=0, j=0x30; i < 20; i++)
     key[i] = j++;
+  /* 303132333435363738393a3b3c3d3e3f40414243 */
   check_one_mac (GCRY_MD_SHA1, key, 20, "Sample #2", 9,
                  "\x09\x22\xd3\x40\x5f\xaa\x3d\x19\x4f\x82"
                  "\xa4\x58\x30\x73\x7d\x5c\xc6\xc7\x5d\x24");
@@ -109,6 +112,9 @@ check_hmac (void)
     fprintf (stderr, "checking FIPS-198a, A.3\n");
   for (i=0, j=0x50; i < 100; i++)
     key[i] = j++;
+  /* 505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f
+   * 707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f
+   * 909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3 */
   check_one_mac (GCRY_MD_SHA1, key, 100, "Sample #3", 9,
                  "\xbc\xf4\x1e\xab\x8b\xb2\xd8\x02\xf3\xd0"
                  "\x5c\xaf\x7c\xb0\x92\xec\xf8\xd1\xa3\xaa");
@@ -117,6 +123,8 @@ check_hmac (void)
     fprintf (stderr, "checking FIPS-198a, A.4\n");
   for (i=0, j=0x70; i < 49; i++)
     key[i] = j++;
+  /* 707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f
+     909192939495969798999a9b9c9d9e9fa0 */
   check_one_mac (GCRY_MD_SHA1, key, 49, "Sample #4", 9,
                  "\x9e\xa8\x86\xef\xe2\x68\xdb\xec\xce\x42"
                  "\x0c\x75\x24\xdf\x32\xe0\x75\x1a\x2a\x26");
