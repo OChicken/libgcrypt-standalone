@@ -188,6 +188,73 @@ check_hmac_multi (void)
     }
 }
 
+static void
+examples_JinYang(void)
+{
+  gpg_error_t err = 0;
+  gcry_md_hd_t hd;
+  int algo = GCRY_MD_SHA256;
+  int mdlen;
+  int i;
+  unsigned char *p;
+
+  const void *key="encrypt key";
+  const void *data="plain text";
+  size_t keylen  = strlen((char *)key);
+  size_t datalen = strlen((char *)data);
+
+  const char *expect = "\x55\xb5\x14\x91\x08\xb2\x5d\xd7\xdb\x93\x21\x16\xac\x33"
+                       "\x3b\xc9\x69\x85\xd5\x8d\xfe\xc9\x21\x77\xad\x77\x3c\xf1"
+                       "\x76\xe7\x96\xbc";
+
+  err = gcry_md_open (&hd, algo, GCRY_MD_FLAG_HMAC);
+  if (err)
+    {
+      fail ("algo %d, gcry_md_open failed: %s\n", algo, gpg_strerror (err));
+      return;
+    }
+  gcry_md_reset (hd);
+
+  mdlen = gcry_md_get_algo_dlen (algo);
+  if (mdlen < 1 || mdlen > 500)
+    {
+      fail ("algo %d, gcry_md_get_algo_dlen failed: %d\n", algo, mdlen);
+      return;
+    }
+
+  err = gcry_md_setkey(hd, key, keylen);
+  if (err)
+    {
+      fail ("algo %d, gcry_md_setkey failed: %s\n", algo, gpg_strerror (err));
+      return;
+    }
+
+  gcry_md_write (hd, data, datalen);
+  p = gcry_md_read(hd, algo);
+
+  /*
+   * result: "55b5149108b25dd7db932116ac333bc96985d58dfec92177ad773cf176e796bc"
+   * https://1024tools.com/hmac
+   */
+  printf("sha256(data=\"%s\", key=\"%s\") = ", (char *)data, (char *)key);
+  for (i=0; i < mdlen; i++)
+    printf("%02x", (unsigned char)p[i]);
+  printf("\n");
+
+  if (memcmp (p, expect, mdlen))
+    {
+      printf ("computed: ");
+      for (i = 0; i < mdlen; i++)
+	printf ("%02x ", p[i] & 0xFF);
+      printf ("\nexpected: ");
+      for (i = 0; i < mdlen; i++)
+	printf ("%02x ", expect[i] & 0xFF);
+      printf ("\n");
+
+      fail ("algo %d, MAC does not match\n", algo);
+    }
+  gcry_md_close (hd);
+}
 
 int
 main (int argc, char **argv)
@@ -206,6 +273,7 @@ main (int argc, char **argv)
     xgcry_control ((GCRYCTL_SET_DEBUG_FLAGS, 1u, 0));
   check_hmac ();
   check_hmac_multi ();
+  examples_JinYang();
 
   return error_count ? 1 : 0;
 }
