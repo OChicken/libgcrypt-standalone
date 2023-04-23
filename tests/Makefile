@@ -51,6 +51,14 @@ basics:
 	for f in $(BASICS); do \
 		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
 
+hmac: hmac.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+hashtest: hashtest.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+#### rsa ####
+
 rsa:
 	for f in $(RSA); do \
 		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
