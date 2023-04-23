@@ -26,7 +26,7 @@ CC = gcc
 CFLAGS = -DHAVE_CONFIG_H
 CFLAGS += -I. -I.. -I../src
 CFLAGS += -g -O2 -fvisibility=hidden -fno-delete-null-pointer-checks -Wall -Wcast-align -Wshadow -Wstrict-prototypes -Wformat -Wno-format-y2k -Wformat-security -W -Wextra -Wbad-function-cast -Wwrite-strings -Wdeclaration-after-statement -Wno-missing-field-initializers -Wno-sign-compare -Wpointer-arith
-LDLIBS = -lgcrypt -lgpg-error
+LDLIBS = -lgcrypt -lgpg-error -Wl,-rpath=../src/.libs
 
 BASICS = \
 	version t-secmem mpitests t-sexp t-convert \
@@ -51,10 +51,16 @@ basics:
 	for f in $(BASICS); do \
 		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
 
+basic: basic.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
 hmac: hmac.c
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 hashtest: hashtest.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+aeswrap: aeswrap.c
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 #### rsa ####
@@ -71,9 +77,13 @@ ecc:
 	for f in $(ECC); do \
 		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
 
-benchmark:
-	for f in $(BENCHMARK); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
+#### benchmark ####
+
+benchmark: benchmark.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+bench-slope: bench-slope.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 noinst:
 	for f in $(NOINST); do \
@@ -84,22 +94,22 @@ others:
 		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
 
 clean-basics:
-	for f in $(BASICS); do rm $$f; done
+	for f in $(BASICS); do rm -f $$f; done
 
 clean-rsa:
 	for f in $(RSA); do rm $$f; done
 
 clean-dsa:
-	for f in $(DSA); do rm $$f; done
+	for f in $(DSA); do rm -f $$f; done
 
 clean-ecc:
-	for f in $(ECC); do rm $$f; done
+	for f in $(ECC); do rm -f $$f; done
 
 clean-benchmark:
-	for f in $(BENCHMARK); do rm $$f; done
+	for f in $(BENCHMARK); do rm -f $$f; done
 
 clean-noinst:
-	for f in $(NOINST); do rm $$f; done
+	for f in $(NOINST); do rm -f $$f; done
 
 clean-others:
-	for f in $(OTHERS); do rm $$f; done
+	for f in $(OTHERS); do rm -f $$f; done
