@@ -51,6 +51,12 @@ basics:
 	for f in $(BASICS); do \
 		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
 
+version: version.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+t-secmem: t-secmem.c
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
 basic: basic.c
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
