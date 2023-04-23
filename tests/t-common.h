@@ -19,7 +19,7 @@
 
 #include <stdarg.h>
 
-#include "../src/gcrypt.h"
+#include <gcrypt.h>
 
 #ifndef PGM
 # error Macro PGM not defined.
