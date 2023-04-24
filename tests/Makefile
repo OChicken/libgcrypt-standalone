@@ -46,76 +46,28 @@ NOINST = testdrv fipsdrv rsacvt genhashdata gchash
 
 OTHERS = fipsrngdrv pkbench testapi
 
-
-basics:
-	for f in $(BASICS); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
-
-version: version.c
+%: %.c
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-t-secmem: t-secmem.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+basics: $(BASICS)
 
-basic: basic.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+rsa: $(RSA)
 
-hmac: hmac.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+dsa: $(DSA)
 
-hashtest: hashtest.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+ecc: $(ECC)
 
-aeswrap: aeswrap.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+benchmark: $(BENCHMARK)
 
-#### rsa ####
+noinst: $(NOINST)
 
-rsa:
-	for f in $(RSA); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
+others: $(OTHERS)
 
-dsa:
-	for f in $(DSA); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
-
-ecc:
-	for f in $(ECC); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
-
-#### benchmark ####
-
-benchmark: benchmark.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
-
-bench-slope: bench-slope.c
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
-
-noinst:
-	for f in $(NOINST); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
-
-others:
-	for f in $(OTHERS); do \
-		$(CC) $(CFLAGS) $$f.c -o $$f $(LDLIBS) || exit 1; done
-
-clean-basics:
+clean:
 	for f in $(BASICS); do rm -f $$f; done
-
-clean-rsa:
-	for f in $(RSA); do rm $$f; done
-
-clean-dsa:
+	for f in $(RSA); do rm -f $$f; done
 	for f in $(DSA); do rm -f $$f; done
-
-clean-ecc:
 	for f in $(ECC); do rm -f $$f; done
-
-clean-benchmark:
 	for f in $(BENCHMARK); do rm -f $$f; done
-
-clean-noinst:
 	for f in $(NOINST); do rm -f $$f; done
-
-clean-others:
 	for f in $(OTHERS); do rm -f $$f; done
